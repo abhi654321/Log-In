@@ -1,24 +1,25 @@
 import { Avatar, Button, Divider, MenuItem, TextField } from '@mui/material'
 import axios from 'axios'
 import { useFormik } from 'formik'
+import moment from 'moment/moment'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const Profile = () => {
-    const [userData,setUserData] = useState([])
+    const [userData,setUserData] = useState({})
     const [profilePic,setProfilePic]= useState("")
     const token = localStorage.getItem("token")
     const initialValues={
-        first_name:userData.gender?userData.gender:"mohit",
-        last_name:"verma",
-        email:"mohitv178@gmail.com",
-        gender:"Male",
-        date_of_birth:"19-02-1996",
-        mobile_no:"9696185041",
-        gst_no:"958674657865",
-        bank_account_number:"87654534213",
-        ifsc_code:"HDFC1399453",
+        first_name:userData.first_name?userData.first_name:"",
+        last_name:userData.last_name?userData.last_name:"",
+        email:userData.email?userData.email:"",
+        gender:userData.gender?userData.gender:"",
+        date_of_birth:userData.date_of_birth?userData.date_of_birth:"",
+        mobile_no:userData.mobile_no?userData.mobile_no:"",
+        gst_no:userData.gst_no?userData.gst_no:"",
+        bank_account_number:userData.bank_account_number?userData.bank_account_number:"",
+        ifsc_code:userData.ifsc_code?userData.ifsc_code:"",
     }
     const formik = useFormik({
         initialValues:initialValues,
@@ -29,7 +30,7 @@ const Profile = () => {
             formData.append("last_name",formik.values.last_name);
             formData.append("email",formik.values.email);
             formData.append("gender",formik.values.gender);
-                formData.append("date_of_birth",formik.values.date_of_birth);
+                formData.append("date_of_birth",moment(formik.values.date_of_birth).format("YYYY-MM-DD"));
                 formData.append("mobile_no",formik.values.mobile_no);
                 formData.append("gst_no",formik.values.gst_no);
                 formData.append("bank_account_number",formik.values.bank_account_number);
@@ -39,17 +40,20 @@ const Profile = () => {
             handleUserDataUpdate(formData)
         },
     })
-
+useEffect(()=>{
+    formik.setValues(userData)
+    setProfilePic(userData.profile_picture)
+},[userData])
     console.log(formik.values,"fdhgdf")
     const handleUserDataUpdate=async (formData)=>{
         try {
             
-            const response = await axios.post("https://storebh.bhaaraterp.com/api/update-profile/",formData)
+            const response = await axios.post("https://storebh.bhaaraterp.com/api/update-profile/",formData,{headers:{token:localStorage.getItem("token"),Authorization:localStorage.getItem("token")}})
             console.log(response)
             if(response.data.response_code===200) {
                 toast.success(response.data.msg?response.data.msg:response.data.message)
             } else{
-                toast.error(response.data.msg)
+                toast.success(response.data.msg)
             }
         } catch (error) {
             console.log(error);
@@ -62,8 +66,9 @@ const Profile = () => {
             token:token,
         }}).then(res=>{
             if(res.status===200){
+                // console.log(res.data.data.profile_data[0])
                 setUserData(res.data.data.profile_data[0])
-                setProfilePic(res.data.data.profile_data[0].profilePic?res.data.data.profile_data[0].profilePic:"")
+                setProfilePic(res.data.data.profile_data[0].profile_picture?res.data.data.profile_data[0].profile_picture:"")
             } else {
                 toast("Something went wrong")
             }
@@ -91,7 +96,7 @@ const Profile = () => {
         <MenuItem value="Male">Male</MenuItem>
         <MenuItem value="Female">Female</MenuItem>
       </TextField>
-      <TextField variant='standard' placeholder='dob' size='small' value={formik.values.date_of_birth} name='date_of_birth' id=   'date_of_birth' onChange={formik.handleChange}/>
+      <TextField variant='standard' placeholder='dob' type='date' size='small' value={formik.values.date_of_birth} name='date_of_birth' id=   'date_of_birth' onChange={formik.handleChange}/>
       <TextField variant='standard' type='number' placeholder='mobile number' size='small' value={formik.values.mobile_no} name='mobile_no' id=     'mobile_no' onChange={formik.handleChange}/>
       <TextField variant='standard' type='number' placeholder='gst' size='small' value={formik.values.gst_no} name='gst_no' id=     'gst_no' onChange={formik.handleChange}/>
       <TextField variant='standard' type='number' placeholder='Bank Account number' size='small' value={formik.values.bank_account_number} name='bank_account_number' id=     'bank_account_number' onChange={formik.handleChange}/>

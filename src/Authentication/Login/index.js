@@ -1,10 +1,12 @@
 import { Button, CircularProgress, TextField } from '@mui/material'
-import shopinggirl from "../../shoping girl.jpg"
+// import shopinggirl from "../../shoping girl.jpg"
 import axios from 'axios'
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import shoppingGirl from "../../Assets/Login.gif"
+import {LoadingButton} from "@mui/lab"
 
 const Login = () => {
     const [isOtpSent,setIsOtpSent] = useState(false)
@@ -52,7 +54,7 @@ const Login = () => {
   return (
     <div className='w-screen flex px-40 pt-8 justify-center items-center'>
       <div className='w-1/2'>
-        <img src={shopinggirl} width={400}  alt="" />
+        <img src={shoppingGirl} width={400}  alt="" />
       </div>
       <div className='flex flex-col gap-6 h-[400] w-1/2 justify-between'>
       <span className=" flex flex-col text-center">
@@ -66,7 +68,22 @@ const Login = () => {
         <p>{`We have send a code to your mobile number ${mobileNumber}`}</p>
     :<p>Enter Your Mobile number to start shopping</p>}
     {isOtpSent?<TextField value={otp} onChange={(e)=>setOtp(e.target.value)} type="number" placeholder='Enter Otp Here...' />:<TextField value={mobileNumber} type='number' onChange={(e)=>setMobileNumber(e.target.value)} placeholder='Enter your Mobile Number...' />}
+    <LoadingButton onClick={()=>{
+        if(isOtpSent){
+            handleOtpVerificationApi();
+        } else {
+            handleMobileVerificationApi();
+        }
+      }}
+        // type="submit"
+        fullWidth
+        className='!text-white' size={"small"} 
+        variant="contained"
       
+        loading={isLoading}
+      >
+      {isOtpSent?"Verify Otp":"Send Otp"}
+      </LoadingButton>
       <Button onClick={()=>{
         if(isOtpSent){
             handleOtpVerificationApi();

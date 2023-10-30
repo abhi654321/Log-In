@@ -1,4 +1,7 @@
 import { TextField } from "@mui/material";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import React from "react";
 // import MenuIcon from '@mui/icons-material/Menu';
 
@@ -6,7 +9,7 @@ const Header = () => {
   return (
     <>
       <div className="w-full">
-        <div className="md:flex bg-white py-4 px-2 gap-5 shadow-md">
+        <div className="md:flex bg-white py-4 px-2 gap-5 shadow-md justify-between">
           <div className="flex gap-2 items-center">
             <span>
               {/* <MenuIcon /> */}
@@ -31,7 +34,16 @@ const Header = () => {
             />
             
           </div>
+          < FavoriteBorderIcon className="text-orange-600 ,mx-0"/>
+          <p className="text-orange-600">Wishlist</p>
+           
+          <WorkOutlineIcon  className="text-orange-600"/>
+           <p className="text-orange-600">Bag</p>
+
+           <AccountBalanceWalletIcon className="text-orange-600" />
+           <p className="text-orange-600">Wallet</p>
         </div>
+         
       </div>
     </>
   );
